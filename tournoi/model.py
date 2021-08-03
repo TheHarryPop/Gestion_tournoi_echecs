@@ -12,7 +12,7 @@ class Tournament:
 
     def serialized_tournament(self):
         tournament = {"name": self.name, "place": self.place, "date": self.date, "turns": self.turns,
-                      "player": self.players, "time control": self.time_control, "description": self.description,
+                      "players": self.players, "time control": self.time_control, "description": self.description,
                       "number of rounds": self.number_of_rounds}
         return tournament
 
@@ -38,7 +38,7 @@ class Turn:
     tous deux être automatiquement remplis lorsque l'utilisateur crée un tour et le marque comme terminé. Les instances
     de round doivent être stockées dans une liste sur l'instance de tournoi à laquelle elles appartiennent."""
 
-    def __init__(self, name, start_date_time, turn_matches):
+    def __init__(self, name, turn_matches, start_date_time):
         self.name = name
         self.turn_matches = turn_matches
         self.start_date_time = start_date_time
@@ -53,11 +53,9 @@ class Match:
     """Un match consiste en une paire de joueurs avec un champ de résultat pour chaque joueur.
     Un match doit être stocké sous forme de tuple contenant deux listes qui contiennent deux éléments.
     Une référence à une instance de joueur et un score => match = ([name, score],[name, score])"""
-    def __init__(self, player_1, player_2):
-        self.player_1 = player_1
-        self.player_2 = player_2
-        self.player_name_1 = self.player_1.get("name")
-        self.player_name_2 = self.player_2.get("name")
+    def __init__(self, player_name_1, player_name_2):
+        self.player_name_1 = player_name_1
+        self.player_name_2 = player_name_2
         self.player_1_score = "Match a venir"
         self.player_2_score = "Match a venir"
 

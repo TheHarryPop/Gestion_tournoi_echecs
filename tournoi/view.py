@@ -140,23 +140,11 @@ class View:
         return tournament_date
 
     @staticmethod
-    def get_score_player_1():
+    def get_score_player(player_name):
         test = 0
         score = -1
         while test == 0:
-            score = input("Quel est le score du joueur 1 ? ")
-            try:
-                test = int(score) + 1
-            except ValueError:
-                print("Erreur, vous devez entrer un score au format numérique")
-        return score
-
-    @staticmethod
-    def get_score_player_2():
-        test = 0
-        score = -1
-        while test == 0:
-            score = input("Quel est le score du joueur 2 ? ")
+            score = input(f"Quel est le score de {player_name} ? ")
             try:
                 test = int(score) + 1
             except ValueError:
@@ -205,6 +193,13 @@ class View:
     def nok_tournament_load():
         print("il n'existe pas de tournoi enregistré")
 
+    @staticmethod
+    def ok_turn_score():
+        print("Résultats du tour enregistrés")
+
+    @staticmethod
+    def nok_turn_load():
+        print("il n'existe pas de tour enregistré")
 
 def main():
     pass

@@ -28,8 +28,8 @@ class DataBase:
             tournament_list.append(place)
             date = tournament["date"]
             tournament_list.append(date)
-            rounds = tournament["rounds"]
-            tournament_list.append(rounds)
+            turns = tournament["turns"]
+            tournament_list.append(turns)
             players = tournament["players"]
             tournament_list.append(players)
             time_control = tournament["time control"]
