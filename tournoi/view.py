@@ -4,15 +4,15 @@ import datetime
 class View:
 
     @staticmethod
-    def get_choices():
+    def get_principal_choices():
         test = 0
         choice = -1
         while test == 0:
             request = input("Quelle action souhaitez vous réaliser ? \n"
                             "tapez 1 pour créer un joueur \n"
                             "tapez 2 pour créer un tournoi \n"
-                            "tapez 3 pour rechercher un joueur existant \n"
-                            "tapez 4 pour quitter l'application ")
+                            "tapez 3 pour charger un tournoi déjà créé \n"
+                            "tapez 4 pour quitter l'application \n")
             try:
                 test = int(request) + 1
                 if int(request) == 1:
@@ -24,7 +24,37 @@ class View:
                 elif int(request) == 4:
                     choice = 4
                 else:
-                    print("Erreur, vous devez choisir parmi les trois propositions")
+                    print("Erreur, vous devez choisir parmi les propositions")
+                    test = 0
+            except ValueError:
+                print("Erreur, vous devez entrer une valeur au format numérique")
+        return choice
+
+    @staticmethod
+    def get_tournament_choices():
+        test = 0
+        choice = -1
+        while test == 0:
+            request = input("Quelle action souhaitez vous réaliser ? \n"
+                            "tapez 1 pour créer un nouveau tour \n"
+                            "tapez 2 pour renseigner les scores \n"
+                            "tapez 3 pour .... \n"
+                            "tapez 4 pour revenir au menu principal \n"
+                            "tapez 5 pour quitter l'application \n")
+            try:
+                test = int(request) + 1
+                if int(request) == 1:
+                    choice = 1
+                elif int(request) == 2:
+                    choice = 2
+                elif int(request) == 3:
+                    choice = 3
+                elif int(request) == 4:
+                    choice = 4
+                elif int(request) == 5:
+                    choice = 5
+                else:
+                    print("Erreur, vous devez choisir parmi les propositions")
                     test = 0
             except ValueError:
                 print("Erreur, vous devez entrer une valeur au format numérique")
@@ -110,15 +140,6 @@ class View:
         return tournament_date
 
     @staticmethod
-    def get_tournament_number_of_rounds():
-        number_of_rounds = input("Combien de tours composent le tournoi ? (tapez enter pour la valeur par défaut = 4) ")
-        if number_of_rounds != "":
-            return number_of_rounds
-        else:
-            number_of_rounds = ""
-            return number_of_rounds
-
-    @staticmethod
     def get_score_player_1():
         test = 0
         score = -1
@@ -170,6 +191,19 @@ class View:
     def get_tournament_description():
         description = str.capitalize(input("Description du tournoi : "))
         return description
+
+    @staticmethod
+    def create_tournament_false(player_table):
+        print("La base de données doit contenir au moins 8 joueurs pour pouvoir créer un tournoi \n"
+              f"Pour le moment, elle en contient {len(player_table)}")
+
+    @staticmethod
+    def ok_tournament_load():
+        print("Tournoi chargé")
+
+    @staticmethod
+    def nok_tournament_load():
+        print("il n'existe pas de tournoi enregistré")
 
 
 def main():
