@@ -61,7 +61,7 @@ class Controller:
             time_control = self.view.get_tournament_time_control()
             description = self.view.get_tournament_description()
             self.tournament = Tournament(name, place, date, time_control, description)
-            self.add_players(self.database.extract_players_list())
+            self.add_players()
             serialized_tournament = self.tournament.serialized_tournament()
             self.database.save_tournament(serialized_tournament)
             turn = self.create_turn()
@@ -87,14 +87,59 @@ class Controller:
             self.tournament.turns.append(data_tournament[3])
             self.tournament.players = data_tournament[4]
 
-    def add_players(self, players_list):
-        for data_player in players_list:
-            player = Player(surname=data_player[0], name=data_player[1], date_of_birth=data_player[2],
-                            sex=data_player[3], ranking=int(data_player[4]))
-            serialized_player = player.serialized_player()
-            self.tournament.players.append(serialized_player)
+    def add_players(self):
+        players_list = self.database.extract_players_list()
+        players_name_list = [player[0] for player in players_list]
+        self.view.print_players_name_list(players_name_list)
+        while len(self.tournament.players) != 8:
+            tournament_players_name = [player["surname"] for player in self.tournament.players]
+            self.view.number_of_players(self.tournament.players)
+            name = self.view.get_name()
+            while name not in players_name_list:
+                self.view.error_name_in_list(name)
+                name = self.view.get_name()
+            if name in tournament_players_name:
+                self.view.error_name_in_tournament(name)
+            else:
+                index = players_name_list.index(name)
+                data_player = players_list[index]
+                player = Player(surname=data_player[0], name=data_player[1], date_of_birth=data_player[2],
+                                sex=data_player[3], ranking=int(data_player[4]))
+                serialized_player = player.serialized_player()
+                self.tournament.players.append(serialized_player)
 
-    def make_pair_of_players_1st(self):
+    def create_turn(self):
+        name = -1
+        tournaments_table = self.database.tournament_table.all()
+        for tournament in tournaments_table:
+            turns = tournament["turns"]
+            if len(turns) == 0:
+                name = "Round 1"
+                print(name)
+            else:
+                n = len(turns)+1
+                name = f"Round {n}"
+                print(name)
+
+        # for tournament in tournaments_table:
+        #     i = 0
+        #     run = True
+        #     turns = tournament["turns"]
+        #     while run:
+        #         try:
+        #             turns[i]
+        #             i += 1
+        #         except IndexError:
+        #             run = False
+        #             i += 1
+        #     name = f"Round {i}"
+        now = datetime.datetime.now()
+        start_date_time = f"Date et heure de debut : {now.strftime('%d/%m/%Y %H:%M:%S')}"
+        turn_matches = self.make_1st_pair_of_players()
+        turn = Turn(name, turn_matches, start_date_time)
+        return turn
+
+    def make_1st_pair_of_players(self):
         matches_list = []
         i = 0
         sorted_players = sorted(self.tournament.players, key=itemgetter("ranking"), reverse=False)
@@ -106,27 +151,6 @@ class Controller:
             matches_list.append(serialized_match)
             i += 1
         return matches_list
-
-    def create_turn(self):
-        name = -1
-        tournaments_table = self.database.tournament_table.all()
-        for tournament in tournaments_table:
-            i = 0
-            run = True
-            turns = tournament["turns"]
-            while run:
-                try:
-                    turns[i]
-                    i += 1
-                except IndexError:
-                    run = False
-                    i += 1
-            name = f"Turn {i}"
-        now = datetime.datetime.now()
-        start_date_time = f"Date et heure de debut : {now.strftime('%d/%m/%Y %H:%M:%S')}"
-        turn_matches = self.make_pair_of_players_1st()
-        turn = Turn(name, turn_matches, start_date_time)
-        return turn
 
     def results(self):
         if self.tournament.turns[0]:
@@ -143,40 +167,17 @@ class Controller:
                 match.player_2_score = self.view.get_score_player(match.player_name_2)
                 matches_tuples.append(match.serialized_match())
             now = datetime.datetime.now()
-            end_date_time = f"Date et heure de debut : {now.strftime('%d/%m/%Y %H:%M:%S')}"
+            end_date_time = f"Date et heure de fin : {now.strftime('%d/%m/%Y %H:%M:%S')}"
             completed_turn = Turn(turn[0], matches_tuples, turn[2])
             completed_turn.end_date_time = end_date_time
             self.tournament.turns[-1] = completed_turn.serialized_turn()
             serialized_tournament = self.tournament.serialized_tournament()
             self.database.update_tournament_table(serialized_tournament)
             self.view.ok_turn_score()
+            return self.tournament_user_choice()
         else:
             self.view.nok_turn_load()
-
-    # def results_process(self):
-    #     if self.tournament.turns[0]:
-    #         turn = self.tournament.turns[-1]
-    #         match_list = turn[1]
-    #         matches_tuples = []
-    #         for i in range(4):
-    #             score = self.add_results(match_list[i])
-    #             matches_tuples.append(score)
-    #         turn[1] = matches_tuples
-    #         serialized_tournament = self.tournament.serialized_tournament()
-    #         self.database.update_tournament_table(serialized_tournament)
-    #         self.view.ok_turn_score()
-    #     else:
-    #         self.view.nok_turn_load()
-
-    # def add_results(self, match_list):
-    #     player_1 = match_list[0]
-    #     player_2 = match_list[1]
-    #     player_name_1 = player_1[0]
-    #     player_name_2 = player_2[0]
-    #     score_player_1 = self.view.get_score_player(player_name_1)
-    #     score_player_2 = self.view.get_score_player(player_name_2)
-    #     match_tuple = ([player_name_1, score_player_1], [player_name_2, score_player_2])
-    #     return match_tuple
+            return self.tournament_user_choice()
 
 
 if __name__ == "__main__":

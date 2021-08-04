@@ -201,9 +201,33 @@ class View:
     def nok_turn_load():
         print("il n'existe pas de tour enregistré")
 
-def main():
-    pass
+    @staticmethod
+    def get_name():
+        test = 0
+        while test == 0:
+            name = str.capitalize(input("Quel est le nom du joueur à ajouter au tournoi ? "))
+            try:
+                int(name)
+            except ValueError:
+                test += 1
+                return name
+
+    @staticmethod
+    def error_name_in_list(name):
+        print(f"Erreur, {name} ne fait pas partie de la liste des joueurs")
+
+    @staticmethod
+    def error_name_in_tournament(name):
+        print(f"Erreur, {name} fait déjà partie de la liste des joueurs inscrits au tournoi")
+
+    @staticmethod
+    def print_players_name_list(players_name_list):
+        print(players_name_list)
+
+    @staticmethod
+    def number_of_players(tournament_players):
+        print(f"La liste comporte {len(tournament_players)} joueur(s)")
 
 
 if __name__ == "__main__":
-    main()
+    View.get_name()
