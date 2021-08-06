@@ -9,11 +9,12 @@ class Tournament:
         self.number_of_rounds = number_of_rounds
         self.players = []
         self.turns = []
+        self.ranking = []
 
     def serialized_tournament(self):
         tournament = {"name": self.name, "place": self.place, "date": self.date, "turns": self.turns,
                       "players": self.players, "time control": self.time_control, "description": self.description,
-                      "number of rounds": self.number_of_rounds}
+                      "number of rounds": self.number_of_rounds, "ranking": self.ranking}
         return tournament
 
 
@@ -59,7 +60,7 @@ class Match:
         self.player_1_score = "Match a venir"
         self.player_2_score = "Match a venir"
 
-    def serialized_match(self):
+    def match_tuple(self):
         match = ([self.player_name_1, self.player_1_score], [self.player_name_2, self.player_2_score])
         return match
 

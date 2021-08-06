@@ -38,7 +38,7 @@ class View:
             request = input("Quelle action souhaitez vous réaliser ? \n"
                             "tapez 1 pour créer un nouveau tour \n"
                             "tapez 2 pour renseigner les scores \n"
-                            "tapez 3 pour .... \n"
+                            "tapez 3 pour afficher le classement \n"
                             "tapez 4 pour revenir au menu principal \n"
                             "tapez 5 pour quitter l'application \n")
             try:
@@ -144,11 +144,23 @@ class View:
         test = 0
         score = -1
         while test == 0:
-            score = input(f"Quel est le score de {player_name} ? ")
+            request = input(f"Quel est le résultat de {player_name} ? \n"
+                            "tapez 1 pour un victoire \n"
+                            "tapez 0 pour un défaite \n"
+                            "tapez 0.5 pour un match nul \n")
             try:
-                test = int(score) + 1
+                test = float(request) + 1
+                if float(request) == 1.0:
+                    score = 1
+                elif float(request) == 0.0:
+                    score = 0
+                elif float(request) == 0.5:
+                    score = 0.5
+                else:
+                    print("Erreur, vous devez choisir parmi les propositions")
+                    test = 0
             except ValueError:
-                print("Erreur, vous devez entrer un score au format numérique")
+                print("Erreur, vous devez entrer une valeur au format numérique")
         return score
 
     @staticmethod
@@ -226,7 +238,11 @@ class View:
 
     @staticmethod
     def number_of_players(tournament_players):
-        print(f"La liste comporte {len(tournament_players)} joueur(s)")
+        print(f"Il manque encore {8 - len(tournament_players)} joueur(s) inscrit(s) au tournoi")
+
+    @staticmethod
+    def print_tournament_ranking(tournament_ranking_df):
+        print(tournament_ranking_df)
 
 
 if __name__ == "__main__":

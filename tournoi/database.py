@@ -36,6 +36,8 @@ class DataBase:
             tournament_list.append(time_control)
             description = tournament["description"]
             tournament_list.append(description)
+            ranking = tournament["ranking"]
+            tournament_list.append(ranking)
             tournaments_list.append(tournament_list)
         return tournaments_list
 
@@ -59,6 +61,20 @@ class DataBase:
 
     def update_tournament_table(self, item):
         self.tournament_table.update(item)
+
+    def get_doc_id_by_player(self, surname):
+        user = Query()
+        try:
+            player = self.player_table.get(user.surname == surname)
+            player_id = player.doc_id
+            return player_id
+        except AttributeError:
+            result = "error"
+            return result
+
+    def get_player_by_doc_id(self, doc_id):
+        player = self.player_table.get(doc_id=doc_id)
+        return player
 
 
 if __name__ == "__main__":
