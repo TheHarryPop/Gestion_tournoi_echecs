@@ -233,6 +233,18 @@ class View:
         print(f"Erreur, {name} fait déjà partie de la liste des joueurs inscrits au tournoi")
 
     @staticmethod
+    def data_tournament(data_list):
+        name = str.capitalize(input(f"Voici le(s) tournoi(s) enregistré(s) :\n"
+                                    f"{data_list}\n"
+                                    f"Lequel voulez vous charger ? "))
+        return name
+
+
+    @staticmethod
+    def error_tournament_in_list(tournament):
+        print(f"Erreur, {tournament} ne fait pas partie de la liste des tournois")
+
+    @staticmethod
     def print_players_name_list(players_name_list):
         print(players_name_list)
 
@@ -243,6 +255,10 @@ class View:
     @staticmethod
     def print_tournament_ranking(tournament_ranking_df):
         print(tournament_ranking_df)
+
+    @staticmethod
+    def scores_already_registered():
+        print("Les scores du dernier tour sont déjà enregistrés")
 
 
 if __name__ == "__main__":

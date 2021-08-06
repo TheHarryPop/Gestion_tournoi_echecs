@@ -72,9 +72,23 @@ class DataBase:
             result = "error"
             return result
 
+    def get_doc_id_by_name(self, name):
+        search = Query()
+        try:
+            tournament = self.tournament_table.get(search.name == name)
+            tournament_id = tournament.doc_id
+            return tournament_id
+        except AttributeError:
+            result = "error"
+            return result
+
     def get_player_by_doc_id(self, doc_id):
         player = self.player_table.get(doc_id=doc_id)
         return player
+
+    def get_tournament_by_doc_id(self, doc_id):
+        tournament = self.tournament_table.get(doc_id=doc_id)
+        return tournament
 
 
 if __name__ == "__main__":
