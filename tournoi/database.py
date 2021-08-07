@@ -17,29 +17,38 @@ class DataBase:
     def save_player(self, serialized_player):
         self.player_table.insert(serialized_player)
 
-    def extract_tournaments_list(self):
-        tournaments_list = []
+    # def extract_tournaments_list(self):
+    #     tournaments_list = []
+    #     tournaments_table = self.tournament_table.all()
+    #     for tournament in tournaments_table:
+    #         tournament_list = []
+    #         name = tournament["name"]
+    #         tournament_list.append(name)
+    #         place = tournament["place"]
+    #         tournament_list.append(place)
+    #         date = tournament["date"]
+    #         tournament_list.append(date)
+    #         turns = tournament["turns"]
+    #         tournament_list.append(turns)
+    #         players = tournament["players"]
+    #         tournament_list.append(players)
+    #         time_control = tournament["time control"]
+    #         tournament_list.append(time_control)
+    #         description = tournament["description"]
+    #         tournament_list.append(description)
+    #         ranking = tournament["ranking"]
+    #         tournament_list.append(ranking)
+    #         tournaments_list.append(tournament_list)
+    #     return tournaments_list
+
+    def extract_tournaments_names_list(self):
+        tournaments_names_list = []
         tournaments_table = self.tournament_table.all()
         for tournament in tournaments_table:
-            tournament_list = []
+            tournaments_names_list = []
             name = tournament["name"]
-            tournament_list.append(name)
-            place = tournament["place"]
-            tournament_list.append(place)
-            date = tournament["date"]
-            tournament_list.append(date)
-            turns = tournament["turns"]
-            tournament_list.append(turns)
-            players = tournament["players"]
-            tournament_list.append(players)
-            time_control = tournament["time control"]
-            tournament_list.append(time_control)
-            description = tournament["description"]
-            tournament_list.append(description)
-            ranking = tournament["ranking"]
-            tournament_list.append(ranking)
-            tournaments_list.append(tournament_list)
-        return tournaments_list
+            tournaments_names_list.append(name)
+        return tournaments_names_list
 
     def extract_players_list(self):
         players_list = []

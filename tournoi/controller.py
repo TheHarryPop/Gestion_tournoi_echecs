@@ -71,27 +71,28 @@ class Controller:
 
     def loading_process(self):
         if self.database.tournament_table:
-            tournament_list = self.database.extract_tournaments_list()
-            self.load_tournament(tournament_list)
+            tournaments_names_list = self.database.extract_tournaments_names_list()
+            self.load_tournament(tournaments_names_list)
             self.view.ok_tournament_load()
             return self.tournament_user_choice()
         else:
             self.view.nok_tournament_load()
             return self.principal_user_choice()
 
-    def load_tournament(self, tournaments_list):
-        tournaments_name_list = [each_tournament[0] for each_tournament in tournaments_list]
-        tournament_name = self.view.data_tournament(tournaments_name_list)
-        while tournament_name not in tournaments_name_list:
+    def load_tournament(self, tournaments_names_list):
+        tournament_name = self.view.data_tournament(tournaments_names_list)
+        while tournament_name not in tournaments_names_list:
             self.view.error_name_in_list(tournament_name)
-            tournament_name = self.view.data_tournament(tournaments_name_list)
+            tournament_name = self.view.data_tournament(tournaments_names_list)
         tournament_id = self.database.get_doc_id_by_name(tournament_name)
         data_tournament = self.database.get_tournament_by_doc_id(tournament_id)
-        self.tournament = Tournament(name=data_tournament[0], place=data_tournament[1], date=data_tournament[2],
-                                     time_control=data_tournament[5], description=data_tournament[6])
-        self.tournament.turns = data_tournament[3]
-        self.tournament.players = data_tournament[4]
-        self.tournament.ranking = data_tournament[7]
+
+        self.tournament = Tournament(name=data_tournament["name"], place=data_tournament["place"],
+                                     date=data_tournament["date"], time_control=data_tournament["time control"],
+                                     description=data_tournament["description"])
+        self.tournament.turns = data_tournament["turns"]
+        self.tournament.players = data_tournament["players"]
+        self.tournament.ranking = data_tournament["ranking"]
 
     def add_players(self):
         players_list = self.database.extract_players_list()
@@ -117,6 +118,7 @@ class Controller:
 
     def create_turn(self):
         tournaments_table = self.database.tournament_table.all()
+        print(len(tournaments_table))
         name = -1
         turn_matches = -1
         for tournament in tournaments_table:
