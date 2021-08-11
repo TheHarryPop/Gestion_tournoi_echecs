@@ -11,21 +11,16 @@ class View:
             request = input("Quelle action souhaitez vous réaliser ? \n"
                             "tapez 1 pour créer un joueur \n"
                             "tapez 2 pour créer un tournoi \n"
-                            "tapez 3 pour charger un tournoi déjà créé \n"
-                            "tapez 4 pour accéder au menu du tournoi \n"
-                            "tapez 5 pour quitter l'application \n")
+                            "tapez 3 pour afficher la liste des tournois enregistrés \n"
+                            "tapez 4 pour afficher la liste par ordre alphabétique les joueurs enregistrés \n"
+                            "tapez 5 pour afficher la liste par ordre de classement les joueurs enregistrés \n"
+                            "tapez 6 pour charger un tournoi déjà créé \n"
+                            "tapez 7 pour accéder au menu du tournoi \n"
+                            "tapez 8 pour quitter l'application \n")
             try:
                 test = int(request) + 1
-                if int(request) == 1:
-                    choice = 1
-                elif int(request) == 2:
-                    choice = 2
-                elif int(request) == 3:
-                    choice = 3
-                elif int(request) == 4:
-                    choice = 4
-                elif int(request) == 5:
-                    choice = 5
+                if 0 < int(request) < 9:
+                    choice = int(request)
                 else:
                     print("Erreur, vous devez choisir parmi les propositions")
                     test = 0
@@ -44,28 +39,19 @@ class View:
         while test == 0:
             request = input("Quelle action souhaitez vous réaliser ? \n"
                             "tapez 1 pour créer un nouveau tour \n"
-                            "tapez 2 pour afficher les matchs du tour en cours \n"
-                            "tapez 3 pour afficher les matchs joués \n"
-                            "tapez 4 pour renseigner les scores \n"
-                            "tapez 5 pour afficher le classement \n"
-                            "tapez 6 pour revenir au menu principal \n"
-                            "tapez 7 pour quitter l'application \n")
+                            "tapez 2 pour afficher la liste par ordre alphabétique des joueurs du tournoi \n"
+                            "tapez 3 pour afficher la liste par classement personnel des joueurs du tournoi \n"
+                            "tapez 4 pour afficher la liste des tours du tournoi \n"
+                            "tapez 5 pour afficher les matchs du tour en cours \n"
+                            "tapez 6 pour afficher les matchs joués \n"
+                            "tapez 7 pour renseigner les scores \n"
+                            "tapez 8 pour afficher le classement \n"
+                            "tapez 9 pour revenir au menu principal \n"
+                            "tapez 10 pour quitter l'application \n")
             try:
                 test = int(request) + 1
-                if int(request) == 1:
-                    choice = 1
-                elif int(request) == 2:
-                    choice = 2
-                elif int(request) == 3:
-                    choice = 3
-                elif int(request) == 4:
-                    choice = 4
-                elif int(request) == 5:
-                    choice = 5
-                elif int(request) == 6:
-                    choice = 6
-                elif int(request) == 7:
-                    choice = 7
+                if 0 < int(request) < 11:
+                    choice = int(request)
                 else:
                     print("Erreur, vous devez choisir parmi les propositions")
                     test = 0
@@ -261,10 +247,6 @@ class View:
         print(f"Il manque encore {8 - len(tournament_players)} joueur(s) inscrit(s) au tournoi")
 
     @staticmethod
-    def print_tournament_ranking(tournament_ranking_df):
-        print(tournament_ranking_df)
-
-    @staticmethod
     def scores_already_registered():
         print("Les scores du dernier tour sont déjà enregistrés")
 
@@ -285,6 +267,14 @@ class View:
         print(f"Matchs du {name}")
         for match in matches:
             print(match[0][0], match[0][1], "-", match[1][1], match[1][0])
+
+    @staticmethod
+    def no_match_played():
+        print("Aucun match n'a pour le moment été joué dans ce tournoi")
+
+    @staticmethod
+    def print_item(item):
+        print(item)
 
 
 if __name__ == "__main__":

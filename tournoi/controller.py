@@ -1,6 +1,7 @@
 import datetime
 import numpy as np
 import pandas as pd
+from operator import itemgetter
 
 import tournoi.view as view
 from tournoi.model import Tournament
@@ -24,14 +25,20 @@ class Controller:
         elif val == 2:
             self.create_tournament()
         elif val == 3:
-            self.loading_process()
+            self.show_tournaments_in_database()
         elif val == 4:
+            self.show_players_in_database_by_surname()
+        elif val == 5:
+            self.show_players_in_database_by_ranking()
+        elif val == 6:
+            self.loading_process()
+        elif val == 7:
             if not self.tournament:
                 self.view.print_absence_tournament()
                 return self.principal_user_choice()
             else:
                 self.tournament_user_choice()
-        elif val == 5:
+        elif val == 8:
             exit()
 
     def tournament_user_choice(self):
@@ -48,16 +55,22 @@ class Controller:
                 self.view.maxi_turn_reached()
             return self.tournament_user_choice()
         elif val == 2:
-            self.show_turn_matches()
+            self.show_players_in_tournament_by_surname()
         elif val == 3:
-            self.show_played_matches()
+            self.show_players_in_tournament_by_ranking()
         elif val == 4:
-            self.add_results()
+            self.show_turn_in_tournament()
         elif val == 5:
-            self.show_tournament_ranking()
+            self.show_turn_matches()
         elif val == 6:
-            self.principal_user_choice()
+            self.show_played_matches()
         elif val == 7:
+            self.add_results()
+        elif val == 8:
+            self.show_tournament_ranking()
+        elif val == 9:
+            self.principal_user_choice()
+        elif val == 10:
             exit()
 
     def new_player(self):
@@ -94,7 +107,8 @@ class Controller:
             return self.tournament_user_choice()
 
     def loading_process(self):
-        """Affiche les différents tournois enregistrés dans la base de données"""
+        """Test si des tournois sont enregistrés dans la base de données. Le cas échéant, l'utilisateur sélectionne
+        celui qu'il veut charger"""
         if self.database.tournament_table:
             tournaments_names_list = self.database.extract_tournaments_names_list()
             self.load_tournament(tournaments_names_list)
@@ -204,55 +218,6 @@ class Controller:
         self.database.update_tournament_table({"pairing manager": self.tournament.pairing_manager})
         return matches_list
 
-    # def make_next_pair_of_players(self):
-    #     """Créer les paires des tours 2 à 4 en triant par score puis, en cas d'égalité, par classement personnel
-    #     Si le joueur 1 de l'instance de Match à déjà rencontré le joueur 2, ce dernier sera remplacé par le joueur
-    #     suivant"""
-    #     new_matches = []
-    #     id_in_turn = []
-    #     i = 0
-    #     match_list = []
-    #     ranking = self.tournament.ranking
-    #     sorted_players = sorted(ranking, key=lambda x: (-x["score"], -x["ranking"]))
-    #     for each_player in range(int(len(sorted_players) / 2)):
-    #         player_1 = sorted_players[0 + i]
-    #         player_1_surname = player_1.get("surname")
-    #         player_1_id = self.database.get_doc_id_by_player(player_1_surname)
-    #         player_2 = sorted_players[1 + i]
-    #         player_2_surname = player_2.get("surname")
-    #         player_2_id = self.database.get_doc_id_by_player(player_2_surname)
-    #         for player in self.tournament.pairing_manager:
-    #             for key, value in player.items():
-    #                 if key == str(player_1_id):
-    #                     match_list = str(value)
-    #         j = 1
-    #
-    #         while str(player_2_id) in match_list:
-    #             player_2 = sorted_players[1 + i + j]
-    #             player_2_surname = player_2.get("surname")
-    #             player_2_id = self.database.get_doc_id_by_player(player_2_surname)
-    #             j += 1
-    #         match = Match(player_1_surname, player_2_surname)
-    #         for player in self.tournament.pairing_manager:
-    #             for key, value in player.items():
-    #                 if str(key) == str(player_1_id):
-    #                     match_list = value
-    #                     match_list.append(str(player_2_id))
-    #                     id_in_turn.append(str(player_2_id))
-    #                     player[key] = match_list
-    #                 elif str(key) == str(player_2_id):
-    #                     match_list = value
-    #                     match_list.append(str(player_1_id))
-    #                     id_in_turn.append(str(player_1_id))
-    #                     player[key] = match_list
-    #                 else:
-    #                     pass
-    #         self.database.update_tournament_table({"pairing manager": self.tournament.pairing_manager})
-    #         serialized_match = match.match_tuple()
-    #         new_matches.append(serialized_match)
-    #         i += 2
-    #     return new_matches
-
     def make_next_pair_of_players(self):
         """Créer les paires des tours 2 à 4 en triant par score puis, en cas d'égalité, par classement personnel
         Si le joueur 1 de l'instance de Match à déjà rencontré le joueur 2, ce dernier sera remplacé par le joueur
@@ -268,7 +233,6 @@ class Controller:
             player_1_surname = player_1.get("surname")
             player_1_id = self.database.get_doc_id_by_player(player_1_surname)
             while str(player_1_id) in id_in_turn:
-                print("là")
                 i += 1
                 player_1 = sorted_players[0 + i]
                 player_1_surname = player_1.get("surname")
@@ -280,11 +244,9 @@ class Controller:
                 for key, value in player.items():
                     if key == str(player_1_id):
                         match_list = str(value)
-                        print(match_list)
             j = 1
             raz = False
             while str(player_2_id) in id_in_turn or str(player_2_id) in match_list:
-                print("ici")
                 player_2 = sorted_players[1 + i + j]
                 player_2_surname = player_2.get("surname")
                 player_2_id = self.database.get_doc_id_by_player(player_2_surname)
@@ -292,10 +254,6 @@ class Controller:
                 j += 1
             if raz:
                 i -= 1
-
-            print(player_1_surname)
-            print(player_2_surname)
-
             match = Match(player_1_surname, player_2_surname)
             for player in self.tournament.pairing_manager:
                 for key, value in player.items():
@@ -366,18 +324,18 @@ class Controller:
         surnames = []
         total_statistics = []
         for each_player in sorted_players:
-            surname = [each_player.get("surname")]
+            surname = each_player.get("surname")
             surnames.append(surname)
             statistics = [each_player.get("score"), each_player.get("ranking")]
             total_statistics.append(statistics)
         tournament_ranking_numpy = np.array(total_statistics)
         index_value = []
         for surname in surnames:
-            value = surname[0]
+            value = surname
             index_value.append(value)
         tournament_ranking_df = pd.DataFrame(tournament_ranking_numpy, index=[index_value],
                                              columns=["score", "ranking"])
-        self.view.print_tournament_ranking(tournament_ranking_df)
+        self.view.print_item(tournament_ranking_df)
         return self.tournament_user_choice()
 
     def show_turn_matches(self):
@@ -403,11 +361,129 @@ class Controller:
         turns_matches = [data[1] for data in self.tournament.turns]
         first_match = [turn_matches[1] for turn_matches in turns_matches]
         player_1 = [player[0] for player in first_match]
+        n = 0
         for player in player_1:
             if player[1] != "Match a venir":
                 self.view.print_played_matches(turns_names[player_1.index(player)],
                                                turns_matches[player_1.index(player)])
+                n += 1
+        if n == 0:
+            self.view.no_match_played()
         return self.tournament_user_choice()
+
+    def show_tournaments_in_database(self):
+        """Affiche les différents tournois enregistrés dans la base de données"""
+        if self.database.tournament_table:
+            tournaments_names_list = self.database.extract_tournaments_names_list()
+            self.view.print_item(tournaments_names_list)
+            return self.principal_user_choice()
+        else:
+            self.view.nok_tournament_load()
+            return self.principal_user_choice()
+
+    def show_players_in_database_by_surname(self):
+        players = self.database.extract_players_list()
+        players_list = []
+        for player in players:
+            player_object = Player(surname=player[0], name=player[1], date_of_birth=player[2], sex=player[3],
+                                   ranking=int(player[4]))
+            serialized_player = player_object.serialized_player()
+            players_list.append(serialized_player)
+        sorted_players = sorted(players_list, key=itemgetter('surname'))
+        for each_player in sorted_players:
+            surname = each_player.get("surname")
+            self.view.print_item(surname)
+        return self.principal_user_choice()
+
+    def show_players_in_database_by_ranking(self):
+        players = self.database.extract_players_list()
+        players_list = []
+        for player in players:
+            player_object = Player(surname=player[0], name=player[1], date_of_birth=player[2], sex=player[3],
+                                   ranking=int(player[4]))
+            serialized_player = player_object.serialized_player()
+            players_list.append(serialized_player)
+        sorted_players = sorted(players_list, key=lambda x: (-x["ranking"]))
+        surnames = []
+        rankings = []
+        for each_player in sorted_players:
+            surname = [each_player.get("surname")]
+            surnames.append(surname)
+            ranking = [each_player.get("ranking")]
+            rankings.append(ranking)
+        players_ranking_numpy = np.array(rankings)
+        index_value = []
+        for surname in surnames:
+            value = surname[0]
+            index_value.append(value)
+        players_ranking_df = pd.DataFrame(players_ranking_numpy, index=[index_value], columns=["ranking"])
+        self.view.print_item(players_ranking_df)
+        return self.principal_user_choice()
+
+    def show_players_in_tournament_by_surname(self):
+        players_id = self.tournament.players
+        players = []
+        for player_id in players_id:
+            player_dict = self.database.get_player_by_doc_id(player_id)
+            players.append(player_dict)
+        players_list = []
+        for player in players:
+            player_object = Player(surname=player["surname"], name=player["name"],
+                                   date_of_birth=player["date_of_birth"], sex=player["sex"],
+                                   ranking=int(player["ranking"]))
+            serialized_player = player_object.serialized_player()
+            players_list.append(serialized_player)
+        sorted_players = sorted(players_list, key=itemgetter('surname'))
+        for each_player in sorted_players:
+            surname = each_player.get("surname")
+            self.view.print_item(surname)
+        return self.tournament_user_choice()
+
+    def show_players_in_tournament_by_ranking(self):
+        players_id = self.tournament.players
+        players = []
+        for player_id in players_id:
+            player_dict = self.database.get_player_by_doc_id(player_id)
+            players.append(player_dict)
+        players_list = []
+        for player in players:
+            player_object = Player(surname=player["surname"], name=player["name"],
+                                   date_of_birth=player["date_of_birth"], sex=player["sex"],
+                                   ranking=int(player["ranking"]))
+            serialized_player = player_object.serialized_player()
+            players_list.append(serialized_player)
+        sorted_players = sorted(players_list, key=lambda x: (-x["ranking"]))
+        surnames = []
+        rankings = []
+        for each_player in sorted_players:
+            surname = [each_player.get("surname")]
+            surnames.append(surname)
+            ranking = [each_player.get("ranking")]
+            rankings.append(ranking)
+        players_ranking_numpy = np.array(rankings)
+        index_value = []
+        for surname in surnames:
+            value = surname[0]
+            index_value.append(value)
+        players_ranking_df = pd.DataFrame(players_ranking_numpy, index=[index_value], columns=["ranking"])
+        self.view.print_item(players_ranking_df)
+        return self.tournament_user_choice()
+
+    def show_turn_in_tournament(self):
+        turns = self.tournament.turns
+        turns_list = []
+        for turn in turns:
+            matches = []
+            for match_list in turn[1]:
+                match = ([match_list[0][0], match_list[0][1]], [match_list[1][0], match_list[1][1]])
+                matches.append(match)
+            turn_object = Turn(name=turn[0], turn_matches=matches, start_date_time=turn[2])
+            turn_object.end_date_time = turn[3]
+            serialized_turn = turn_object.serialized_turn()
+            turns_list.append(serialized_turn)
+        sorted_turns = sorted(turns_list, key=itemgetter(0))
+        for turn in sorted_turns:
+            self.view.print_item(turn)
 
 
 if __name__ == "__main__":
