@@ -9,6 +9,7 @@ class DataBase:
         # Pour lancer via un fichier.py du répertoire /tournoi
         # self.db = TinyDB("Database.json")
         self.tournament_table = self.db.table("Tournaments")
+        self.current_tournament = None
         self.player_table = self.db.table("Players")
 
     def save_tournament(self, serialized_tournament):
@@ -43,8 +44,9 @@ class DataBase:
             players_list.append(player_list)
         return players_list
 
-    def update_tournament_table(self, item):
-        self.tournament_table.update(item)
+    def update_tournament_table(self, item, doc_id):
+        self.current_tournament.update(item)
+        self.tournament_table.update(self.current_tournament, doc_ids=[doc_id])
 
     def get_doc_id_by_player(self, surname):
         user = Query()

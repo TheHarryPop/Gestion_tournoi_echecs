@@ -103,6 +103,8 @@ class Controller:
                 self.tournament.pairing_manager.append(pairing_manager)
             serialized_tournament = self.tournament.serialized_tournament()
             self.database.save_tournament(serialized_tournament)
+            tournament_id = self.database.get_doc_id_by_name(self.tournament.name)
+            self.database.current_tournament = self.database.get_tournament_by_doc_id(tournament_id)
             self.create_turn()
             return self.tournament_user_choice()
 
@@ -134,6 +136,8 @@ class Controller:
         self.tournament.players = data_tournament["players"]
         self.tournament.ranking = data_tournament["ranking"]
         self.tournament.pairing_manager = data_tournament["pairing manager"]
+        tournament_id = self.database.get_doc_id_by_name(self.tournament.name)
+        self.database.current_tournament = self.database.get_tournament_by_doc_id(tournament_id)
 
     def add_players(self):
         """Affiche les joueurs enregistrés dans la base de données puis les ajoute au tournoi après sélection par
@@ -161,26 +165,25 @@ class Controller:
 
     def create_turn(self):
         """Créer un nouveau tour"""
-        tournaments_table = self.database.tournament_table.all()
-        name = -1
-        turn_matches = -1
-        for tournament in tournaments_table:
-            turns = tournament["turns"]
-            if not turns:
-                name = "Round 1"
-                turn_matches = self.make_1st_pair_of_players()
-            else:
-                name = f"Round {len(turns) + 1}"
-                turn_matches = self.make_next_pair_of_players()
+        tournament_id = self.database.get_doc_id_by_name(self.tournament.name)
+        tournament_table = self.database.current_tournament
+        turns = tournament_table["turns"]
+        if not turns:
+            name = "Round 1"
+            turn_matches = self.make_1st_pair_of_players()
+        else:
+            name = f"Round {len(turns) + 1}"
+            turn_matches = self.make_next_pair_of_players()
         now = datetime.datetime.now()
         start_date_time = f"Date et heure de debut : {now.strftime('%d/%m/%Y %H:%M:%S')}"
         turn = Turn(name, turn_matches, start_date_time)
         serialized_turn = turn.serialized_turn()
         self.tournament.turns.append(serialized_turn)
-        self.database.update_tournament_table({"turns": self.tournament.turns})
+        self.database.update_tournament_table({"turns": self.tournament.turns}, tournament_id)
 
     def make_1st_pair_of_players(self):
         """Créer les paires du premier tour en triant les joueurs par classement"""
+        tournament_id = self.database.get_doc_id_by_name(self.tournament.name)
         matches_list = []
         i = 0
         players_list = []
@@ -215,13 +218,14 @@ class Controller:
             serialized_match = match.match_tuple()
             matches_list.append(serialized_match)
             i += 1
-        self.database.update_tournament_table({"pairing manager": self.tournament.pairing_manager})
+        self.database.update_tournament_table({"pairing manager": self.tournament.pairing_manager}, tournament_id)
         return matches_list
 
     def make_next_pair_of_players(self):
         """Créer les paires des tours 2 à 4 en triant par score puis, en cas d'égalité, par classement personnel
         Si le joueur 1 de l'instance de Match à déjà rencontré le joueur 2, ce dernier sera remplacé par le joueur
         suivant"""
+        tournament_id = self.database.get_doc_id_by_name(self.tournament.name)
         new_matches = []
         id_in_turn = []
         i = 0
@@ -269,7 +273,7 @@ class Controller:
                         player[key] = match_list
                     else:
                         pass
-            self.database.update_tournament_table({"pairing manager": self.tournament.pairing_manager})
+            self.database.update_tournament_table({"pairing manager": self.tournament.pairing_manager}, tournament_id)
             serialized_match = match.match_tuple()
             new_matches.append(serialized_match)
             i += 2
@@ -277,6 +281,7 @@ class Controller:
 
     def add_results(self):
         """Ajoute les scores de chaque joueur du tour en cours"""
+        tournament_id = self.database.get_doc_id_by_name(self.tournament.name)
         turn = self.tournament.turns[-1]
         match_list = turn[1]
         matches_tuples = []
@@ -313,7 +318,7 @@ class Controller:
         completed_turn.end_date_time = end_date_time
         self.tournament.turns[-1] = completed_turn.serialized_turn()
         serialized_tournament = self.tournament.serialized_tournament()
-        self.database.update_tournament_table(serialized_tournament)
+        self.database.update_tournament_table(serialized_tournament, tournament_id)
         self.view.ok_turn_score()
         return self.tournament_user_choice()
 
