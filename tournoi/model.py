@@ -10,11 +10,13 @@ class Tournament:
         self.players = []
         self.turns = []
         self.ranking = []
+        self.pairing_manager = []
 
     def serialized_tournament(self):
         tournament = {"name": self.name, "place": self.place, "date": self.date, "turns": self.turns,
                       "players": self.players, "time control": self.time_control, "description": self.description,
-                      "number of rounds": self.number_of_rounds, "ranking": self.ranking}
+                      "number of rounds": self.number_of_rounds, "ranking": self.ranking,
+                      "pairing manager": self.pairing_manager}
         return tournament
 
 
@@ -34,10 +36,11 @@ class Player:
 
 
 class Turn:
-    """chaque instance du tour doit contenir un champ de nom. Actuellement, nous appelons nos tours "Round 1", "Round 2"
-    , etc. Elle doit également contenir un champ Date et heure de début et un champ Date et heure de fin, qui doivent
-    tous deux être automatiquement remplis lorsque l'utilisateur crée un tour et le marque comme terminé. Les instances
-    de round doivent être stockées dans une liste sur l'instance de tournoi à laquelle elles appartiennent."""
+    """chaque instance du tour doit contenir un champ de nom. Actuellement, nous appelons nos tours "Round 1",
+    "Round 2", etc. Elle doit également contenir un champ Date et heure de début et un champ Date et heure de fin,
+    qui doivent tous deux être automatiquement remplis lorsque l'utilisateur crée un tour et le marque comme
+    terminé. Les instances de round doivent être stockées dans une liste sur l'instance de tournoi à laquelle elles
+    appartiennent."""
 
     def __init__(self, name, turn_matches, start_date_time):
         self.name = name
@@ -65,9 +68,10 @@ class Match:
         return match
 
 
-def main():
+if __name__ == "__main__":
     pass
 
 
-if __name__ == "__main__":
-    main()
+
+
+

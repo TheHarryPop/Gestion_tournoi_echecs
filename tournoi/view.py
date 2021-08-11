@@ -12,34 +12,7 @@ class View:
                             "tapez 1 pour créer un joueur \n"
                             "tapez 2 pour créer un tournoi \n"
                             "tapez 3 pour charger un tournoi déjà créé \n"
-                            "tapez 4 pour quitter l'application \n")
-            try:
-                test = int(request) + 1
-                if int(request) == 1:
-                    choice = 1
-                elif int(request) == 2:
-                    choice = 2
-                elif int(request) == 3:
-                    choice = 3
-                elif int(request) == 4:
-                    choice = 4
-                else:
-                    print("Erreur, vous devez choisir parmi les propositions")
-                    test = 0
-            except ValueError:
-                print("Erreur, vous devez entrer une valeur au format numérique")
-        return choice
-
-    @staticmethod
-    def get_tournament_choices():
-        test = 0
-        choice = -1
-        while test == 0:
-            request = input("Quelle action souhaitez vous réaliser ? \n"
-                            "tapez 1 pour créer un nouveau tour \n"
-                            "tapez 2 pour renseigner les scores \n"
-                            "tapez 3 pour afficher le classement \n"
-                            "tapez 4 pour revenir au menu principal \n"
+                            "tapez 4 pour accéder au menu du tournoi \n"
                             "tapez 5 pour quitter l'application \n")
             try:
                 test = int(request) + 1
@@ -53,6 +26,46 @@ class View:
                     choice = 4
                 elif int(request) == 5:
                     choice = 5
+                else:
+                    print("Erreur, vous devez choisir parmi les propositions")
+                    test = 0
+            except ValueError:
+                print("Erreur, vous devez entrer une valeur au format numérique")
+        return choice
+
+    @staticmethod
+    def print_absence_tournament():
+        print("Il n'y a pas de tournoi en cours")
+
+    @staticmethod
+    def get_tournament_choices():
+        test = 0
+        choice = -1
+        while test == 0:
+            request = input("Quelle action souhaitez vous réaliser ? \n"
+                            "tapez 1 pour créer un nouveau tour \n"
+                            "tapez 2 pour afficher les matchs du tour en cours \n"
+                            "tapez 3 pour afficher les matchs joués \n"
+                            "tapez 4 pour renseigner les scores \n"
+                            "tapez 5 pour afficher le classement \n"
+                            "tapez 6 pour revenir au menu principal \n"
+                            "tapez 7 pour quitter l'application \n")
+            try:
+                test = int(request) + 1
+                if int(request) == 1:
+                    choice = 1
+                elif int(request) == 2:
+                    choice = 2
+                elif int(request) == 3:
+                    choice = 3
+                elif int(request) == 4:
+                    choice = 4
+                elif int(request) == 5:
+                    choice = 5
+                elif int(request) == 6:
+                    choice = 6
+                elif int(request) == 7:
+                    choice = 7
                 else:
                     print("Erreur, vous devez choisir parmi les propositions")
                     test = 0
@@ -203,15 +216,11 @@ class View:
 
     @staticmethod
     def nok_tournament_load():
-        print("il n'existe pas de tournoi enregistré")
+        print("Il n'existe pas de tournoi enregistré")
 
     @staticmethod
     def ok_turn_score():
         print("Résultats du tour enregistrés")
-
-    @staticmethod
-    def nok_turn_load():
-        print("il n'existe pas de tour enregistré")
 
     @staticmethod
     def get_name():
@@ -239,7 +248,6 @@ class View:
                                     f"Lequel voulez vous charger ? "))
         return name
 
-
     @staticmethod
     def error_tournament_in_list(tournament):
         print(f"Erreur, {tournament} ne fait pas partie de la liste des tournois")
@@ -260,6 +268,24 @@ class View:
     def scores_already_registered():
         print("Les scores du dernier tour sont déjà enregistrés")
 
+    @staticmethod
+    def scores_not_already_registered():
+        print("Les scores du dernier tour ne sont pas encore enregistrés")
+
+    @staticmethod
+    def maxi_turn_reached():
+        print("Nombre maximum  de tours atteint, le tournoi est terminé")
+
+    @staticmethod
+    def need_new_turn():
+        print("Il n'y a pas de matchs à venir, veuillez d'abord créer un nouveau tour")
+
+    @staticmethod
+    def print_played_matches(name, matches):
+        print(f"Matchs du {name}")
+        for match in matches:
+            print(match[0][0], match[0][1], "-", match[1][1], match[1][0])
+
 
 if __name__ == "__main__":
-    View.get_name()
+    pass

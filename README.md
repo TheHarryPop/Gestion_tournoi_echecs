@@ -16,34 +16,12 @@ $ python main.py
 ```
 
 ## Usage
-```python
-def extract_cat():
-```
-Cette fonction liste les différentes pages de catégories de livres
-
-```python
-def extract_books(links_cat):
-```
-Cette fonction liste tous les livres présents dans les catégories
-
-```python
-def extract_data(links_books, cat):
-```
-Cette fonction créer un fichier .CSV pour chaque catégorie dans lequel on trouve le détail suivant pour chaque livre :
-
-Le délimiteur utilisé est un pipe : |
-- product_page_url
-- universal_product_code 
-- title
-- price_including_tax
-- price_excluding_tax
-- number_available
-- product_description
-- category
-- review_rating
-- image_url
-
-L'image de chaque livre est elle aussi téléchargée et insérée dans un dossier Images
+- Seuls les joueurs enregistrés dans la base de données peuvent participer aux tournois
+- Pour créer un nouveau tournoi, la base de données doit nécessairement contenir au minimum 8 joueurs
+- A la création du tournoi, l'utilisateur sélectionnera les participants dans la base de données via leur nom de famille
+- Le tournoi est automatiquement composé de 4 tours.
+- Les matchs du premier tour sont automatiquement créés en fonction du niveau de chaque joueur
+- Les matchs des tours suivants sont automatiquements créés en fonction du classement du tournoi
 
 
 
