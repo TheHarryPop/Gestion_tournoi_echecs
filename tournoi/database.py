@@ -4,10 +4,7 @@ from tinydb import Query
 
 class DataBase:
     def __init__(self):
-        # Pour lancer via main.py
         self.db = TinyDB("tournoi/Database.json")
-        # Pour lancer via un fichier.py du répertoire /tournoi
-        # self.db = TinyDB("Database.json")
         self.tournament_table = self.db.table("Tournaments")
         self.current_tournament = None
         self.player_table = self.db.table("Players")
@@ -76,4 +73,4 @@ class DataBase:
 
 
 if __name__ == "__main__":
-    database = DataBase()
+    pass
