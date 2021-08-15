@@ -1,4 +1,9 @@
 class Tournament:
+    """Permet créer un objet Tournament qui s'enregistre automatiquement dans la Database. L'instance d'un tournoi
+    nécessite que l'utilisateur renseigne un nom, un lieu, une date, une méthode de contrôle de temps et 8 joueurs
+    déjà enregistrés dans la Database. Le nombre de tours est instauré par défaut à 4. Les instances de Turn seront
+    stockées dans la liste turns, les informations nécessaires à établir un classement seront stockées dans la liste
+    ranking, la liste pairing_manager va contenir des informations permettant de ne pas créer des matchs déjà joués"""
 
     def __init__(self, name, place, date, time_control, description, number_of_rounds=4):
         self.name = name
@@ -21,6 +26,8 @@ class Tournament:
 
 
 class Player:
+    """Permet de créer un objet Player qui sera automatiquement enregistré dans la Database. L'instance d'un joueur
+    doit contenir au moins le nom de famille, le prénom, la date de naissance, son sexe et son classement"""
 
     def __init__(self, surname, name, date_of_birth, sex, ranking):
         self.surname = surname
@@ -36,11 +43,9 @@ class Player:
 
 
 class Turn:
-    """chaque instance du tour doit contenir un champ de nom. Actuellement, nous appelons nos tours "Round 1",
-    "Round 2", etc. Elle doit également contenir un champ Date et heure de début et un champ Date et heure de fin,
-    qui doivent tous deux être automatiquement remplis lorsque l'utilisateur crée un tour et le marque comme
-    terminé. Les instances de round doivent être stockées dans une liste sur l'instance de tournoi à laquelle elles
-    appartiennent."""
+    """Permet de créer un objet Turn qui s'intègre à la liste des tours du tournoi en cours puis enregistré dans la
+    Database. L'instance d'un tour doit contenir un champ de nom, un champ Date et heure de début et un champ Date
+    et heure de fin, ainsi que la liste des matchs de ce tour. Toutes ces données sont renseignées automatiquement"""
 
     def __init__(self, name, turn_matches, start_date_time):
         self.name = name
@@ -48,15 +53,17 @@ class Turn:
         self.start_date_time = start_date_time
         self.end_date_time = None
 
-    def serialized_turn(self):
+    def turn_list(self):
         turn = [self.name, self.turn_matches, self.start_date_time, self.end_date_time]
         return turn
 
 
 class Match:
-    """Un match consiste en une paire de joueurs avec un champ de résultat pour chaque joueur.
-    Un match doit être stocké sous forme de tuple contenant deux listes qui contiennent deux éléments.
-    Une référence à une instance de joueur et un score => match = ([name, score],[name, score])"""
+    """Permet de créer un objet Match qui continent les noms des joueurs et leur champ de résultat respectif. Un
+    match est stocké sous forme de tuple contenant deux listes qui contiennent deux éléments : Un nom de joueur et
+    son score => match = ([name, score],[name, score]). Ce tuple au automatiquement inséré dans le tour auquel il
+    appartient. Si le match n'est pas encore joué, la mention "Match a venir" est indiquée à la place du score"""
+
     def __init__(self, player_name_1, player_name_2):
         self.player_name_1 = player_name_1
         self.player_name_2 = player_name_2

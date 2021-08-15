@@ -177,7 +177,7 @@ class Controller:
         now = datetime.datetime.now()
         start_date_time = f"Date et heure de debut : {now.strftime('%d/%m/%Y %H:%M:%S')}"
         turn = Turn(name, turn_matches, start_date_time)
-        serialized_turn = turn.serialized_turn()
+        serialized_turn = turn.turn_list()
         self.tournament.turns.append(serialized_turn)
         self.database.update_tournament_table({"turns": self.tournament.turns}, tournament_id)
 
@@ -249,14 +249,14 @@ class Controller:
                     if key == str(player_1_id):
                         match_list = str(value)
             j = 1
-            raz = False
+            reset = False
             while str(player_2_id) in id_in_turn or str(player_2_id) in match_list:
                 player_2 = sorted_players[1 + i + j]
                 player_2_surname = player_2.get("surname")
                 player_2_id = self.database.get_doc_id_by_player(player_2_surname)
-                raz = True
+                reset = True
                 j += 1
-            if raz:
+            if reset:
                 i -= 1
             match = Match(player_1_surname, player_2_surname)
             for player in self.tournament.pairing_manager:
@@ -316,7 +316,7 @@ class Controller:
         end_date_time = f"Date et heure de fin : {now.strftime('%d/%m/%Y %H:%M:%S')}"
         completed_turn = Turn(turn[0], matches_tuples, turn[2])
         completed_turn.end_date_time = end_date_time
-        self.tournament.turns[-1] = completed_turn.serialized_turn()
+        self.tournament.turns[-1] = completed_turn.turn_list()
         serialized_tournament = self.tournament.serialized_tournament()
         self.database.update_tournament_table(serialized_tournament, tournament_id)
         self.view.ok_turn_score()
@@ -484,7 +484,7 @@ class Controller:
                 matches.append(match)
             turn_object = Turn(name=turn[0], turn_matches=matches, start_date_time=turn[2])
             turn_object.end_date_time = turn[3]
-            serialized_turn = turn_object.serialized_turn()
+            serialized_turn = turn_object.turn_list()
             turns_list.append(serialized_turn)
         sorted_turns = sorted(turns_list, key=itemgetter(0))
         for turn in sorted_turns:

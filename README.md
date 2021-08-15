@@ -1,12 +1,12 @@
 # Gestion_tournoi_echecs
 
-Ce programme python permet de gérer des tournois d'échecs selon le système suisse
+Ce programme python permet de gérer des tournois d'échecs hors ligne selon le système suisse
 
 ## Installation et Lancement
 
 ### Installation de python
 
-Suivez les instruction d'installation de python en suivant le lien https://www.python.org/
+Suivez les instructions d'installation de python en suivant le lien https://www.python.org/
 
 ### Installation environnement et requirements
 
@@ -31,7 +31,7 @@ $ python main.py
 - A la création du tournoi, l'utilisateur sélectionne les participants dans la base de données via leur nom de famille.
 - Le tournoi est automatiquement composé de 4 tours.
 - Les matchs du premier tour sont automatiquement créés en fonction du niveau de chaque joueur
-- Les matchs des tours suivants sont automatiquements créés en fonction du classement du tournoi
+- Les matchs des tours suivants sont automatiquement créés en fonction du classement du tournoi
 - Différentes statistiques sont consultables suivant les données enregistrées :
 	- Dans le menu principal :
 		- La liste des tournois enregistrés dans la base de données
