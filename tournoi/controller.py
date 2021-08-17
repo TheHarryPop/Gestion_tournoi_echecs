@@ -150,7 +150,7 @@ class Controller:
             self.view.number_of_players(self.tournament.players)
             name = self.view.get_name()
             name_id = self.database.get_doc_id_by_player(name)
-            while name not in players_name_list:
+            while str(name) not in players_name_list:
                 self.view.error_name_in_list(name)
                 name = self.view.get_name()
             if name_id in tournament_players_name:
@@ -180,6 +180,7 @@ class Controller:
         serialized_turn = turn.turn_list()
         self.tournament.turns.append(serialized_turn)
         self.database.update_tournament_table({"turns": self.tournament.turns}, tournament_id)
+        self.view.print_new_turn()
 
     def make_1st_pair_of_players(self):
         """Créer les paires du premier tour en triant les joueurs par classement"""
@@ -228,36 +229,35 @@ class Controller:
         tournament_id = self.database.get_doc_id_by_name(self.tournament.name)
         new_matches = []
         id_in_turn = []
-        i = 0
-        match_list = []
         ranking = self.tournament.ranking
         sorted_players = sorted(ranking, key=lambda x: (-x["score"], -x["ranking"]))
         for each_player in range(int(len(sorted_players) / 2)):
-            player_1 = sorted_players[0 + i]
+            i = 0
+            match_list = []
+            player_1 = sorted_players[i]
             player_1_surname = player_1.get("surname")
             player_1_id = self.database.get_doc_id_by_player(player_1_surname)
             while str(player_1_id) in id_in_turn:
                 i += 1
-                player_1 = sorted_players[0 + i]
+                player_1 = sorted_players[i]
                 player_1_surname = player_1.get("surname")
                 player_1_id = self.database.get_doc_id_by_player(player_1_surname)
-            player_2 = sorted_players[1 + i]
+            j = 1
+            player_2 = sorted_players[i + j]
             player_2_surname = player_2.get("surname")
             player_2_id = self.database.get_doc_id_by_player(player_2_surname)
             for player in self.tournament.pairing_manager:
                 for key, value in player.items():
-                    if key == str(player_1_id):
+                    if str(key) == str(player_1_id):
                         match_list = str(value)
-            j = 1
-            reset = False
-            while str(player_2_id) in id_in_turn or str(player_2_id) in match_list:
-                player_2 = sorted_players[1 + i + j]
-                player_2_surname = player_2.get("surname")
-                player_2_id = self.database.get_doc_id_by_player(player_2_surname)
-                reset = True
-                j += 1
-            if reset:
-                i -= 1
+            if player_2 != sorted_players[-1]:
+                while str(player_2_id) in id_in_turn or str(player_2_id) in match_list:
+                    j += 1
+                    player_2 = sorted_players[i + j]
+                    player_2_surname = player_2.get("surname")
+                    player_2_id = self.database.get_doc_id_by_player(player_2_surname)
+            if str(player_2_id) in match_list:
+                self.view.already_met(player_1_surname, player_2_surname)
             match = Match(player_1_surname, player_2_surname)
             for player in self.tournament.pairing_manager:
                 for key, value in player.items():
@@ -276,7 +276,7 @@ class Controller:
             self.database.update_tournament_table({"pairing manager": self.tournament.pairing_manager}, tournament_id)
             serialized_match = match.match_tuple()
             new_matches.append(serialized_match)
-            i += 2
+
         return new_matches
 
     def add_results(self):
@@ -489,6 +489,7 @@ class Controller:
         sorted_turns = sorted(turns_list, key=itemgetter(0))
         for turn in sorted_turns:
             self.view.print_item(turn)
+        return self.tournament_user_choice()
 
 
 if __name__ == "__main__":

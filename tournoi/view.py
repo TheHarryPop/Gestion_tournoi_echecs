@@ -61,13 +61,33 @@ class View:
 
     @staticmethod
     def get_player_surname():
-        surname = str.capitalize(input("Quel est le nom de famille du joueur ? "))
-        return surname
+        test = 0
+        while test == 0:
+            surname = str.capitalize(input("Quel est le nom de famille du joueur ? "))
+            if surname != "":
+                try:
+                    int(surname)
+                    print("Les caractères numériques ne sont pas acceptés")
+                except ValueError:
+                    test += 1
+                    return surname
+            else:
+                print("Vous devez renseigner un nom de famille")
 
     @staticmethod
     def get_player_name():
-        name = str.capitalize(input("Quel est le prénom du joueur ? "))
-        return name
+        test = 0
+        while test == 0:
+            name = str.capitalize(input("Quel est le prénom du joueur ? "))
+            if name != "":
+                try:
+                    int(name)
+                    print("Les caractères numériques ne sont pas acceptés")
+                except ValueError:
+                    test += 1
+                    return name
+            else:
+                print("Vous devez renseigner un prénom")
 
     @staticmethod
     def get_player_date_of_birth():
@@ -117,13 +137,33 @@ class View:
 
     @staticmethod
     def get_tournament_name():
-        name = str.capitalize(input("Quel est le nom du tournoi ? "))
-        return name
+        test = 0
+        while test == 0:
+            name = str.capitalize(input("Quel est le nom du tournoi ? "))
+            if name != "":
+                try:
+                    int(name)
+                    print("Les caractères numériques ne sont pas acceptés")
+                except ValueError:
+                    test += 1
+                    return name
+            else:
+                print("Vous devez renseigner un nom")
 
     @staticmethod
     def get_tournament_place():
-        place = str.capitalize(input("Où se déroule le tournoi ? "))
-        return place
+        test = 0
+        while test == 0:
+            place = str.capitalize(input("Où se déroule le tournoi ? "))
+            if place != "":
+                try:
+                    int(place)
+                    print("Les caractères numériques ne sont pas acceptés")
+                except ValueError:
+                    test += 1
+                    return place
+            else:
+                print("Vous devez renseigner un nom de ville")
 
     @staticmethod
     def get_tournament_date():
@@ -213,11 +253,15 @@ class View:
         test = 0
         while test == 0:
             name = str.capitalize(input("Quel est le nom du joueur à ajouter au tournoi ? "))
-            try:
-                int(name)
-            except ValueError:
-                test += 1
-                return name
+            if name != "":
+                try:
+                    int(name)
+                    print("Les caractères numériques ne sont pas acceptés")
+                except ValueError:
+                    test += 1
+                    return name
+            else:
+                print("Vous devez renseigner un nom")
 
     @staticmethod
     def error_name_in_list(name):
@@ -248,11 +292,11 @@ class View:
 
     @staticmethod
     def scores_already_registered():
-        print("Les scores du dernier tour sont déjà enregistrés")
+        print("Les scores du tour actuel sont déjà enregistrés")
 
     @staticmethod
     def scores_not_already_registered():
-        print("Les scores du dernier tour ne sont pas encore enregistrés")
+        print("Les scores du tour actuel ne sont pas encore enregistrés")
 
     @staticmethod
     def maxi_turn_reached():
@@ -276,6 +320,14 @@ class View:
     def print_item(item):
         print(item)
 
+    @staticmethod
+    def print_new_turn():
+        print("Nouveau tour créé")
+
+    @staticmethod
+    def already_met(player_1_surname, player_2_surname):
+        print(f"{player_1_surname} vs {player_2_surname} - Cas particulier, les joueurs se rencontrent à nouveau")
+
 
 if __name__ == "__main__":
-    pass
+    View.get_name()
